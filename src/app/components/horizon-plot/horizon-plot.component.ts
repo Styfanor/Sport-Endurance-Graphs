@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Globals} from "../../globals";
 
 @Component({
   selector: 'app-horizon-plot',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./horizon-plot.component.scss']
 })
 export class HorizonPlotComponent implements OnInit {
+
+  data: any[] = Globals.data;
 
   constructor() { }
 

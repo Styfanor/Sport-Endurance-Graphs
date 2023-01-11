@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-
+import {Globals} from "../../globals";
 
 @Component({
   selector: 'app-cal-plot',
@@ -9,7 +9,9 @@ import * as d3 from 'd3';
 })
 export class CalPlotComponent implements OnInit {
 
-  private data = [
+  data: any[] = Globals.data;
+
+  private data1 = [
     {"date":"2015-12-20","value":"19"},
     {"date":"2015-12-21","value":"18"},
     {"date":"2015-12-22","value":"25"},
@@ -29,7 +31,7 @@ export class CalPlotComponent implements OnInit {
 
   ngOnInit(): void {
     this.createSvg();
-    this.drawGraph(this.data);
+    this.drawGraph(this.data1);
   }
 
   private createSvg(): void {
