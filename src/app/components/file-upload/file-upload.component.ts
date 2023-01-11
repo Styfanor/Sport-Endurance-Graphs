@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Globals} from "../../globals";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-file-upload',
@@ -43,8 +44,19 @@ export class FileUploadComponent implements OnInit {
       dataArray.push(obj);
     });
 
+    dataArray.pop();
+
+    dataArray.forEach(d => {
+      if (moment(d.ActivityDate, "DD.MM.YYYY").isValid()) {
+        d.ActivityDate = moment(d.ActivityDate, "DD.MM.YYYY").toDate();
+      } else {
+        d.ActivityDate = moment(d.ActivityDate).toDate();
+      }
+    });
+
     this.data = dataArray;
     Globals.data = this.data;
+    console.log(this.data);
   }
 
 }

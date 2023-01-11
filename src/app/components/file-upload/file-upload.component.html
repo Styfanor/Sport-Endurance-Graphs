@@ -10,8 +10,8 @@
   </ng-container>
 
   <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef> Date </th>
-    <td mat-cell *matCellDef="let element"> {{element.ActivityDate}} </td>
+    <th mat-header-cell *matHeaderCellDef> Date MM/DD/YYYY </th>
+    <td mat-cell *matCellDef="let element"> {{element.ActivityDate.getMonth() + "/" + element.ActivityDate.getDate() + "/" + element.ActivityDate.getFullYear()}} </td>
   </ng-container>
 
 

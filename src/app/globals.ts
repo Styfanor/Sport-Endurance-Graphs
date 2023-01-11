@@ -5,6 +5,6 @@ import {Injectable} from '@angular/core';
 })
 export class Globals {
 
-  static data: any[];
+  static data: any[] = [];
 
 }
