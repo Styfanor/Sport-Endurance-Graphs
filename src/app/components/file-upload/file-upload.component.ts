@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Globals} from "../../globals";
 import * as moment from 'moment';
+import * as papaparse from 'papaparse';
 
 @Component({
   selector: 'app-file-upload',
@@ -20,32 +21,12 @@ export class FileUploadComponent implements OnInit {
   async importDataFromCSV(event: any) {
     const file: File = event.target.files[0];
     let csvText: String = await file.text();
-    const propertyNames = csvText.slice(0, csvText.indexOf('\n')).replace(/\s/g,'').split(',');
-    const dataRows = csvText.slice(csvText.indexOf('\n') + 1).split('\n');
-
-    let dataArray: any[] = [];
-    dataRows.forEach((row) => {
-      let values = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-      let obj: any = {};
-
-      for (let index = 0; index < propertyNames.length; index++) {
-        const propertyName: string = propertyNames[index];
-        if (values !== null){
-          let val: any = values[index];
-          if (val === undefined || val === null || val === '') {
-            val = null;
-          } else {
-            val = val.replace(/['"]+/g, '');
-          }
-          obj[propertyName] = val;
-        }
-      }
-
-      dataArray.push(obj);
-    });
-
-    dataArray.pop();
-
+    const propertyNames = csvText.slice(0, csvText.indexOf('\n')).replace(/\s/g,'');
+    const dataRows = csvText.slice(csvText.indexOf('\n') + 1);
+    csvText = propertyNames + '\n' + dataRows;
+    // @ts-ignore
+    let dataArray: any[] = papaparse.parse(csvText,{header: true}).data;
+    console.log(dataArray);
     dataArray.forEach(d => {
       if (moment(d.ActivityDate, "DD.MM.YYYY").isValid()) {
         d.ActivityDate = moment(d.ActivityDate, "DD.MM.YYYY").toDate();
