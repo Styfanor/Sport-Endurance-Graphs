@@ -4,12 +4,13 @@ import {FileUploadComponent} from "./components/file-upload/file-upload.componen
 import {CalPlotComponent} from "./components/cal-plot/cal-plot.component";
 import {HorizonPlotComponent} from "./components/horizon-plot/horizon-plot.component";
 import {MatrixPlotComponent} from "./components/matrix-plot/matrix-plot.component";
+import {DataGuard} from "./guards/data.guard";
 
 const routes: Routes = [
   {path: '', component: FileUploadComponent},
-  {path: 'cal', component: CalPlotComponent},
-  {path: 'horizon', component: HorizonPlotComponent},
-  {path: 'matrix', component: MatrixPlotComponent},
+  {path: 'cal', canActivate:[DataGuard], component: CalPlotComponent},
+  {path: 'horizon', canActivate:[DataGuard], component: HorizonPlotComponent},
+  {path: 'matrix', canActivate:[DataGuard], component: MatrixPlotComponent},
 ];
 
 @NgModule({

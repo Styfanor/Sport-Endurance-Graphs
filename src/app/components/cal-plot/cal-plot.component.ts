@@ -81,9 +81,7 @@ export class CalPlotComponent implements OnInit {
       })
       .on("mouseout", function () {
         d3.select(this).attr('stroke-width', "0.3px");
-      })
-      .append("title")
-      .text(d => (d.date.getMonth() + 1) + "/" + d.date.getDate() + "/" + d.date.getFullYear() + ": " + d.value);
+      });
 
     year
       .append("g")

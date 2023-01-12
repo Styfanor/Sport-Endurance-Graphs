@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3col from "d3-collection";
+import {Globals} from "../globals";
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,14 @@ export class DataService {
     }).entries(dateval);
 
     return years;
+  }
+
+  public checkData(): boolean {
+    if(Globals.data.length === 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   private addMissingDays(dateValues: any[]) {
@@ -97,4 +106,5 @@ export class DataService {
       }
     }
   }
+
 }
