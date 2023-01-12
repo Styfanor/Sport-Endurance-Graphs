@@ -17,9 +17,15 @@ export class DataService {
     data.forEach(d => {
       if(temp.some(e => e.date.getTime() === d.ActivityDate.getTime())) {
         let idx = temp.findIndex(e => e.date.getTime() === d.ActivityDate.getTime());
-        temp[idx].value = temp[idx].value + Number(d.RelativeEffort);
+        if(!(Number(d.RelativeEffort) > 1000)){
+          temp[idx].value = temp[idx].value + Number(d.RelativeEffort);
+        }
       } else{
-        temp.push({date: d.ActivityDate, value: Number(d.RelativeEffort)});
+        if(!(Number(d.RelativeEffort) > 1000)) {
+          temp.push({date: d.ActivityDate, value: Number(d.RelativeEffort)});
+        } else {
+          temp.push({date: d.ActivityDate, value: 0});
+        }
       }
     });
 

@@ -60,12 +60,9 @@ export class CalPlotComponent implements OnInit {
     const year = this.svg.append("g")
       .attr("transform",  "translate(" + ((this.width - this.cellSize * 53) / 2) + "," + (this.height - this.cellSize * 7 - 1) + ")");
 
-    let min=  Math.min(...this.years[this.curYear].values.map(o => o.value));
-    let max =  Math.max(...this.years[this.curYear].values.map(o => o.value));
+    let max = Math.max(...this.years[this.curYear].values.map(d => d.value));
     // @ts-ignore
-    let color = d3
-      .scaleSequential(d3.interpolateBuGn)
-      .domain([min, max]);
+    let color = d3.scaleLinear().domain([0,(max-(max/3))]).range(["white", "green"])
 
     year
       .append("g")
