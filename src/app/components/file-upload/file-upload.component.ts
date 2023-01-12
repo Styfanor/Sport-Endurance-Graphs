@@ -26,18 +26,19 @@ export class FileUploadComponent implements OnInit {
     csvText = propertyNames + '\n' + dataRows;
     // @ts-ignore
     let dataArray: any[] = papaparse.parse(csvText,{header: true}).data;
-    console.log(dataArray);
+    dataArray.pop();
     dataArray.forEach(d => {
       if (moment(d.ActivityDate, "DD.MM.YYYY").isValid()) {
         d.ActivityDate = moment(d.ActivityDate, "DD.MM.YYYY").toDate();
       } else {
         d.ActivityDate = moment(d.ActivityDate).toDate();
+        d.ActivityDate.setHours(0,0,0,0);
       }
     });
 
     this.data = dataArray;
-    Globals.data = this.data;
     console.log(this.data);
+    Globals.data = this.data;
   }
 
 }
