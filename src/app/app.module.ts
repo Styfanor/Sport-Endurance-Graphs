@@ -13,6 +13,10 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
+import { BarChartComponent } from './components/bar-chart/bar-chart.component';
+import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -21,7 +25,8 @@ import {MatTableModule} from "@angular/material/table";
     HorizonPlotComponent,
     MatrixPlotComponent,
     FileUploadComponent,
-    NavbarComponent
+    NavbarComponent,
+    BarChartComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +35,11 @@ import {MatTableModule} from "@angular/material/table";
     MatToolbarModule,
     MatButtonModule,
     MatTableModule,
-    MatIconModule
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

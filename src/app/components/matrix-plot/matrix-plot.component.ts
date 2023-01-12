@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Globals} from "../../globals";
+import {DataService} from "../../services/data.service";
 @Component({
   selector: 'app-matrix-plot',
   templateUrl: './matrix-plot.component.html',
@@ -7,11 +8,23 @@ import {Globals} from "../../globals";
 })
 export class MatrixPlotComponent implements OnInit {
 
-  data: any[] = Globals.data;
+  data: any[];
+  year1: any;
 
-  constructor() { }
+  year2: any;
+
+  constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
+    this.data = this.dataService.createData(Globals.data);
+    this.year1 = this.data[0].key;
+    this.year2 = this.data[0].key;
   }
+
+  getYearData(year) {
+    return this.data.filter(d => d.key === year)[0];
+  }
+
+
 
 }

@@ -1,2 +1,27 @@
 <h2>Matrix Plot</h2>
-<p>{{data}}</p>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>1. Year</mat-label>
+    <mat-select [(ngModel)]="year1" name="food">
+    <mat-option *ngFor="let d of data" [value]="d.key">
+      {{d.key}}
+    </mat-option>
+  </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>2. Year</mat-label>
+    <mat-select [(ngModel)]="year2" name="food">
+      <mat-option *ngFor="let d of data" [value]="d.key">
+        {{d.key}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div>
+  <app-bar-chart *ngIf="year1" [data]="getYearData(year1)" [indicator]="1"></app-bar-chart>
+</div>
+<div>
+  <app-bar-chart *ngIf="year2" [data]="getYearData(year2)" [indicator]="2"></app-bar-chart>
+</div>
