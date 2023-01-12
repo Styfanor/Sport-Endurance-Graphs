@@ -1,6 +1,12 @@
-<h2>Calendar Heatmap</h2>
-<button (click)="prevYear()">prev</button>
-<p>{{getYear()}}</p>
-<button (click)="nextYear()">next</button>
+<h1>Calendar Heatmap</h1>
+<div class="container">
+<button mat-mini-fab color="primary" (click)="prevYear()">
+  <mat-icon>arrow_back</mat-icon>
+</button>
+<h1 class="year">{{getYear()}}</h1>
+<button mat-mini-fab color="primary" (click)="nextYear()">
+  <mat-icon>arrow_forward</mat-icon>
+</button>
+</div>
 <br>
 <svg id="svg"></svg>
