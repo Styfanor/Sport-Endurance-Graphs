@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-import {Globals} from "../../globals";
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -25,7 +24,7 @@ export class CalPlotComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.years = this.dataService.createData(Globals.data);
+    this.years = this.dataService.createData(this.dataService.getData());
     this.curYear = 0;
     this.createGraph();
   }

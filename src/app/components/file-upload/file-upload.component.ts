@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Globals} from "../../globals";
 import * as moment from 'moment';
 import * as papaparse from 'papaparse';
+import {DataService} from "../../services/data.service";
 
 @Component({
   selector: 'app-file-upload',
@@ -10,12 +10,13 @@ import * as papaparse from 'papaparse';
 })
 export class FileUploadComponent implements OnInit {
 
-  data: any[] = Globals.data;
+  data: any[] = [];
 
   displayedColumns: string[] = ['id', 'date', 'name'];
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
+    this.data = this.dataService.getData();
   }
 
   async importDataFromCSV(event: any) {
@@ -36,9 +37,8 @@ export class FileUploadComponent implements OnInit {
       }
     });
 
-    this.data = dataArray;
-    console.log(this.data);
-    Globals.data = this.data;
+    this.data = dataArray;;
+    this.dataService.setData(this.data);
   }
 
 }

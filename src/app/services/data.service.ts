@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as d3col from "d3-collection";
-import {Globals} from "../globals";
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +8,25 @@ export class DataService {
 
   constructor() { }
 
+  public getData(): any[] {
+    if(localStorage.getItem('data')) {
+      let data: any[] = JSON.parse(localStorage.getItem('data'));
+      data.forEach(d => {
+        d.ActivityDate = new Date(d.ActivityDate);
+      });
+      return data;
+    } else {
+      return null;
+    }
+  }
+
+  public setData(data: any[]) {
+    localStorage.setItem('data', JSON.stringify(data));
+  }
+
 
   public createData(data: any[]): any[] {
-
+    console.log(data);
     data.sort((a,b)=>a.ActivityDate.getTime()-b.ActivityDate.getTime());
     let temp: any[] = [];
     let dateval: any[] = [];
@@ -48,7 +63,7 @@ export class DataService {
   }
 
   public checkData(): boolean {
-    if(Globals.data.length === 0) {
+    if(!this.getData()) {
       return false;
     } else {
       return true;

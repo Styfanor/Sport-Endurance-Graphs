@@ -2,7 +2,7 @@
        (change)="importDataFromCSV($event)" hidden="true">
 <button mat-raised-button color="primary" (click)="fileUpload.click()"> Import from csv</button>
 <div>
-  <table mat-table [dataSource]="data" class="mat-elevation-z8" *ngIf="data.length !== 0">
+  <table mat-table [dataSource]="data" class="mat-elevation-z8" *ngIf="data">
 
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> ID </th>
