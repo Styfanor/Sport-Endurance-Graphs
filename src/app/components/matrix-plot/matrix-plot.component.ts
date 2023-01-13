@@ -21,6 +21,9 @@ export class MatrixPlotComponent implements OnInit {
   year1width: any;
 
   year1height: any;
+   matrixwidth: any;
+
+  matrixheight: any;
 
   constructor(private dataService: DataService) { }
 
@@ -42,5 +45,10 @@ export class MatrixPlotComponent implements OnInit {
   onResizedYear2(event: ResizedEvent) {
     this.year2width = event.newRect.width;
     this.year2height = event.newRect.height;
+  }
+
+  onResizedMatrix(event: ResizedEvent) {
+    this.matrixwidth = event.newRect.width;
+    this.matrixheight = event.newRect.height;
   }
 }

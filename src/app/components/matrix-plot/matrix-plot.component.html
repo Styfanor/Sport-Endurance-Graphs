@@ -32,7 +32,11 @@
       <app-bar-chart *ngIf="year1" [data]="getYearData(year1)" [indicator]="1" [color]="'#d03535'" [width]="year1width"  [height]="year1height"></app-bar-chart>
     </div>
   </mat-grid-tile>
-  <mat-grid-tile colspan="5" rowspan="5">4</mat-grid-tile>
+  <mat-grid-tile colspan="5" rowspan="5">
+    <div class = "year" (resized)="onResizedMatrix($event)">
+      <app-matrix [year1]="getYearData(year1)" [year2]="getYearData(year2)" [height]="matrixheight" [width]="matrixwidth"></app-matrix>
+    </div>
+  </mat-grid-tile>
 </mat-grid-list>
 </div>
 
