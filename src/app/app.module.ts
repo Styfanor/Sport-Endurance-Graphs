@@ -19,6 +19,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { AngularResizeEventModule } from 'angular-resize-event';
+import { MatrixComponent } from './components/matrix/matrix.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { AngularResizeEventModule } from 'angular-resize-event';
     MatrixPlotComponent,
     FileUploadComponent,
     NavbarComponent,
-    BarChartComponent
+    BarChartComponent,
+    MatrixComponent
   ],
     imports: [
         BrowserModule,

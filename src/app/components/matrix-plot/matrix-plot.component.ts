@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {ResizedEvent} from "angular-resize-event";
+import {coerceStringArray} from "@angular/cdk/coercion";
 @Component({
   selector: 'app-matrix-plot',
   templateUrl: './matrix-plot.component.html',
@@ -17,6 +18,10 @@ export class MatrixPlotComponent implements OnInit {
 
   year2height: any;
 
+  year1width: any;
+
+  year1height: any;
+
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
@@ -29,8 +34,12 @@ export class MatrixPlotComponent implements OnInit {
     return this.dataService.groupDataByWeek(this.data.filter(d => d.key === year)[0].values);
   }
 
+  onResizedYear1(event: ResizedEvent) {
+    this.year1width = event.newRect.width;
+    this.year1height = event.newRect.height;
+  }
 
-  onResized(event: ResizedEvent) {
+  onResizedYear2(event: ResizedEvent) {
     this.year2width = event.newRect.width;
     this.year2height = event.newRect.height;
   }
