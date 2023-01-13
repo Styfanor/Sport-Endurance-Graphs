@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {AfterViewInit, Component, DoCheck, Input, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -6,7 +6,7 @@ import * as d3 from 'd3';
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent implements OnInit, OnChanges {
+export class BarChartComponent implements OnInit, AfterViewInit, DoCheck {
 
   @Input() data: any;
 
@@ -19,13 +19,15 @@ export class BarChartComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
     this.createSvg();
     this.drawBars(this.data.values);
   }
 
-  ngOnChanges(): void {
+  ngDoCheck(): void {
     this.createSvg();
-    console.log(this.data)
     this.drawBars(this.data.values);
   }
 
