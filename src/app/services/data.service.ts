@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as d3 from 'd3';
 import * as d3col from "d3-collection";
 
 @Injectable({
@@ -46,6 +47,7 @@ export class DataService {
     });
 
     this.addMissingDays(temp);
+
     temp.forEach(d => {
       if(dateval.some(e => e.date.getTime() === d.date.getTime())) {
         let idx = dateval.findIndex(e => e.date.getTime() === d.date.getTime());
@@ -55,11 +57,26 @@ export class DataService {
       }
     });
 
+    this.addWeek(dateval);
+
     let years = d3col.nest().key(function (d: any) {
       return d.date.getFullYear()
     }).entries(dateval);
-
+    console.log(years);
     return years;
+  }
+
+  public groupDataByWeek(data: any[]): any[] {
+    let temp: any[] = [];
+    data.forEach(d => {
+      if(temp.some(e => e.week === d.week)) {
+        let idx = temp.findIndex(e => e.week === d.week);
+        temp[idx].value = temp[idx].value + Number(d.value);
+      } else{
+        temp.push({week: d.week, value: Number(d.value)});
+      }
+    });
+    return temp;
   }
 
   public checkData(): boolean {
@@ -68,6 +85,12 @@ export class DataService {
     } else {
       return true;
     }
+  }
+
+  private addWeek(data: any[]) {
+    data.forEach(d => {
+      d.week = d3.timeMonday.count(d3.timeYear(d.date), d.date);
+    });
   }
 
   private addMissingDays(dateValues: any[]) {

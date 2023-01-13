@@ -17,6 +17,9 @@ import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatGridListModule} from "@angular/material/grid-list";
+import { AngularResizeEventModule } from 'angular-resize-event';
+
 
 @NgModule({
   declarations: [
@@ -28,19 +31,21 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     NavbarComponent,
     BarChartComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatTableModule,
+        MatIconModule,
+        MatInputModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatGridListModule,
+      AngularResizeEventModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
