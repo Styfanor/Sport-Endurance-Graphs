@@ -1,17 +1,17 @@
 <h2>Matrix Plot</h2>
 <div>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="selector">
     <mat-label>1. Year</mat-label>
-    <mat-select [(ngModel)]="year1" name="food">
+    <mat-select [(ngModel)]="year1">
     <mat-option *ngFor="let d of data" [value]="d.key">
       {{d.key}}
     </mat-option>
   </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="selector">
     <mat-label>2. Year</mat-label>
-    <mat-select [(ngModel)]="year2" name="food">
+    <mat-select [(ngModel)]="year2">
       <mat-option *ngFor="let d of data" [value]="d.key">
         {{d.key}}
       </mat-option>

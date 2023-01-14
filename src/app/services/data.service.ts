@@ -7,22 +7,16 @@ import * as d3col from "d3-collection";
 })
 export class DataService {
 
+  data: any[];
+
   constructor() { }
 
   public getData(): any[] {
-    if(localStorage.getItem('data')) {
-      let data: any[] = JSON.parse(localStorage.getItem('data'));
-      data.forEach(d => {
-        d.ActivityDate = new Date(d.ActivityDate);
-      });
-      return data;
-    } else {
-      return null;
-    }
+      return this.data;
   }
 
   public setData(data: any[]) {
-    localStorage.setItem('data', JSON.stringify(data));
+    this.data = data;
   }
 
 
@@ -36,12 +30,14 @@ export class DataService {
         let idx = temp.findIndex(e => e.date.getTime() === d.ActivityDate.getTime());
         if(!(Number(d.RelativeEffort) > 1000)){
           temp[idx].value = temp[idx].value + Number(d.RelativeEffort);
+        } else {
+          temp[idx].value = temp[idx].value + 1000;
         }
       } else{
         if(!(Number(d.RelativeEffort) > 1000)) {
           temp.push({date: d.ActivityDate, value: Number(d.RelativeEffort)});
         } else {
-          temp.push({date: d.ActivityDate, value: 0});
+          temp.push({date: d.ActivityDate, value: 1000});
         }
       }
     });

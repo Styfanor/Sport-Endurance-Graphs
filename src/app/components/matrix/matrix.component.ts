@@ -69,15 +69,10 @@ export class MatrixComponent implements AfterViewInit, DoCheck {
     this.svg.append("g")
       .call(d3.axisLeft(y));
 
-
-    let maxyear1 = 0-Math.max(...year1.map(d => d.value));
-    let maxyear2 = Math.max(...year2.map(d => d.value));
-
-    // @ts-ignore
-    var color = d3.scaleLinear().domain([maxyear1, 0, maxyear2]).range(["#d03535", "#fff", "#3559d0"])
-
     year1.map((d, i) => {
       year2.map((e, j) => {
+        // @ts-ignore
+        var color = d3.scaleLinear().domain([(d.value + 1)*-1, 0, e.value +1]).range(["#d03535", "#fff", "#3559d0"])
         this.svg.append("rect")
           .attr("x", x(e.week))
           .attr("y", y(d.week))
@@ -85,7 +80,7 @@ export class MatrixComponent implements AfterViewInit, DoCheck {
           .attr("height", y.bandwidth())
           .style("fill", color(e.value - d.value))
           .style("stroke", "black")
-          .style("stroke-width", 0.1);
+          .style("stroke-width", (e.week === d.week) ? 3 : 1)
       });
     });
 
