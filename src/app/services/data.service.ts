@@ -83,6 +83,21 @@ export class DataService {
     }
   }
 
+  public getDataFFM(data: any[]): any[] {
+    let fit = 0;
+    let fat = 0;
+    let form = 0;
+    data.forEach(d => {
+      fit = Math.exp(-1/42) * fit + (1 - Math.exp(-1/42)) * d.value;
+      fat = Math.exp(-1/7) * fat + (1 - Math.exp(-1/7)) * d.value;
+      form = fit - fat;
+      d.fit = fit;
+      d.fat = fat;
+      d.form = form;
+    });
+    return data;
+  }
+
   private addWeek(data: any[]) {
     data.forEach(d => {
       d.week = d3.timeMonday.count(d3.timeYear(d.date), d.date);
@@ -140,5 +155,7 @@ export class DataService {
       }
     }
   }
+
+
 
 }
