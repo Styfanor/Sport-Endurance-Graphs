@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import {DataService} from "../../services/data.service";
 
@@ -17,6 +17,14 @@ export class CalPlotComponent implements OnInit {
   private width = 960;
   private height = 136;
   private cellSize: number = 17;
+  metrics: any[] = [
+    {name: 'Relative Effort', value: 'RelativeEffort'},
+    {name: 'Distance', value: 'Distance'},
+    {name: 'Total Duration', value: 'ElapsedTime'},
+    {name: 'Moving Duration', value: 'MovingTime'}
+  ];
+  selected: any = 'RelativeEffort';
+
 
 
 
@@ -24,8 +32,14 @@ export class CalPlotComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.years = this.dataService.createData(this.dataService.getData());
+    this.years = this.dataService.createData(this.dataService.getData(), this.selected);
     this.curYear = 0;
+    this.createGraph();
+  }
+
+  changeSelect():void {
+    console.log(this.selected)
+    this.years = this.dataService.createData(this.dataService.getData(), this.selected);
     this.createGraph();
   }
   nextYear() {

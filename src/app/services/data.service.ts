@@ -20,25 +20,22 @@ export class DataService {
   }
 
 
-  public createData(data: any[]): any[] {
+  public createData(data: any[], valueField: any): any[] {
     console.log(data);
     data.sort((a,b)=>a.ActivityDate.getTime()-b.ActivityDate.getTime());
     let temp: any[] = [];
     let dateval: any[] = [];
     data.forEach(d => {
+      if((Number(d.RelativeEffort) > 1000)){
+        d.RelativeEffort = 1000;
+      }
+    })
+    data.forEach(d => {
       if(temp.some(e => e.date.getTime() === d.ActivityDate.getTime())) {
         let idx = temp.findIndex(e => e.date.getTime() === d.ActivityDate.getTime());
-        if(!(Number(d.RelativeEffort) > 1000)){
-          temp[idx].value = temp[idx].value + Number(d.RelativeEffort);
-        } else {
-          temp[idx].value = temp[idx].value + 1000;
-        }
+        temp[idx].value = temp[idx].value + Number(d[valueField]);
       } else{
-        if(!(Number(d.RelativeEffort) > 1000)) {
-          temp.push({date: d.ActivityDate, value: Number(d.RelativeEffort)});
-        } else {
-          temp.push({date: d.ActivityDate, value: 1000});
-        }
+          temp.push({date: d.ActivityDate, value: Number(d[valueField])});
       }
     });
 

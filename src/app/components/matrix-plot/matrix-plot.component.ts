@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DoCheck, OnInit} from '@angular/core';
 import {DataService} from "../../services/data.service";
 import {ResizedEvent} from "angular-resize-event";
-import {coerceStringArray} from "@angular/cdk/coercion";
+
 @Component({
   selector: 'app-matrix-plot',
   templateUrl: './matrix-plot.component.html',
@@ -25,12 +25,24 @@ export class MatrixPlotComponent implements OnInit {
 
   matrixheight: any;
 
+  metrics: any[] = [
+    {name: 'Relative Effort', value: 'RelativeEffort'},
+    {name: 'Distance', value: 'Distance'},
+    {name: 'Total Duration', value: 'ElapsedTime'},
+    {name: 'Moving Duration', value: 'MovingTime'}
+  ];
+  selected: any = 'RelativeEffort';
+
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.data = this.dataService.createData(this.dataService.getData());
+    this.data = this.dataService.createData(this.dataService.getData(), this.selected);
     this.year1 = this.data[0].key;
     this.year2 = this.data[0].key;
+  }
+
+  changeSelect():void {
+    this.data = this.dataService.createData(this.dataService.getData(), this.selected);
   }
 
   getYearData(year) {

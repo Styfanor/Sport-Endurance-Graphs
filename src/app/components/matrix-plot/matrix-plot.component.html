@@ -17,6 +17,15 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <mat-form-field appearance="fill" class="selector">
+    <mat-label>Metrics</mat-label>
+    <mat-select  [(ngModel)]="selected" (ngModelChange)="changeSelect()">
+      <mat-option *ngFor="let metric of metrics" [value]="metric.value">
+        {{metric.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div class="container">

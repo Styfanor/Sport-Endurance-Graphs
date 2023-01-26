@@ -8,5 +8,13 @@
   <mat-icon>arrow_forward</mat-icon>
 </button>
 </div>
+<mat-form-field appearance="fill">
+  <mat-label>Metrics</mat-label>
+  <mat-select  [(ngModel)]="selected" (ngModelChange)="changeSelect()">
+    <mat-option *ngFor="let metric of metrics" [value]="metric.value">
+      {{metric.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 <br>
 <svg id="svg"></svg>
