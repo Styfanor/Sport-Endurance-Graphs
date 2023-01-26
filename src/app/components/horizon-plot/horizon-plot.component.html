@@ -1,2 +1,13 @@
 <h1>Horizon Plot</h1>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Values</mat-label>
+    <mat-select  [(ngModel)]="selected" (ngModelChange)="changeSelect()">
+      <mat-option *ngFor="let val of ff" [value]="val.value">
+        {{val.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 <svg id="svg"></svg>
+

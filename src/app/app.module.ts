@@ -20,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { AngularResizeEventModule } from 'angular-resize-event';
 import { MatrixComponent } from './components/matrix/matrix.component';
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { MatrixComponent } from './components/matrix/matrix.component';
         ReactiveFormsModule,
         FormsModule,
         MatGridListModule,
-      AngularResizeEventModule
+        AngularResizeEventModule,
+        MatTabsModule
     ],
   providers: [],
   bootstrap: [AppComponent]
