@@ -80,9 +80,126 @@ export class HorizonPlotComponent implements OnInit {
       svg.append("g")
         .call(d3.axisLeft(yScale));
 
+      let lineSvg = svg.append("g");
+
+      let focus = svg.append("g")
+        .style("display", "none");
+
+      let bisectDate = d3.bisector(function(d) { // @ts-ignore
+        return d.date; }).left;
+
+      focus.append("circle")
+        .attr("class", "y")
+        .style("fill", "none")
+        .style("stroke", "blue")
+        .attr("r", 4);
+
+      // append the x line
+      focus.append("line")
+        .attr("class", "x")
+        .style("stroke", "blue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0.5)
+        .attr("y1", 0)
+        .attr("y2", height);
+
+      // append the y line
+      focus.append("line")
+        .attr("class", "y")
+        .style("stroke", "blue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0.5)
+        .attr("x1", width)
+        .attr("x2", width);
+
+      // place the value at the intersection
+      focus.append("text")
+        .attr("class", "y1")
+        .style("stroke", "white")
+        .style("stroke-width", "3.5px")
+        .style("opacity", 0.8)
+        .attr("dx", 8)
+        .attr("dy", "-.3em");
+      focus.append("text")
+        .attr("class", "y2")
+        .attr("dx", 8)
+        .attr("dy", "-.3em");
+
+      // place the date at the intersection
+      focus.append("text")
+        .attr("class", "y3")
+        .style("stroke", "white")
+        .style("stroke-width", "3.5px")
+        .style("opacity", 0.8)
+        .attr("dx", 8)
+        .attr("dy", "1em");
+      focus.append("text")
+        .attr("class", "y4")
+        .attr("dx", 8)
+        .attr("dy", "1em");
+
+      // append the rectangle to capture mouse
+      svg.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", function(event) {
+          // @ts-ignore
+          var x0 = xScale.invert(d3.pointer(event)[0]),
+            i = bisectDate(data, x0, 1),
+            d0 = data[i - 1],
+            d1 = data[i],
+            // @ts-ignore
+            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+          focus.select("circle.y")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d[label]) + ")");
+
+          focus.select("text.y1")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d[label]) + ")")
+            .text("Value: " + Math.round(d[label]));
+
+          focus.select("text.y2")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d[label]) + ")")
+            .text("Value: " + Math.round(d[label]));
+
+          focus.select("text.y3")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d[label]) + ")")
+            .text(d.date.toISOString().split('T')[0]);
+
+          focus.select("text.y4")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d[label]) + ")")
+            .text(d.date.toISOString().split('T')[0]);
+
+          focus.select(".x")
+            .attr("transform",
+              "translate(" + xScale(d.date) + "," +
+              yScale(d.close) + ")")
+            .attr("y2", height - yScale(d[label]));
+
+          focus.select(".y")
+            .attr("transform",
+              "translate(" + width * -1 + "," +
+              yScale(d[label]) + ")")
+            .attr("x2", width + width);
+        });
+
       if (label === "form") {
 
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#949494')
           .attr("stroke", "none")
@@ -100,7 +217,7 @@ export class HorizonPlotComponent implements OnInit {
           );
 
         // Optimal Training
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#52b254')
           .attr("stroke", "none")
@@ -118,7 +235,7 @@ export class HorizonPlotComponent implements OnInit {
           );
 
         // High Risk
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#ef1717')
           .attr("stroke", "none")
@@ -136,7 +253,7 @@ export class HorizonPlotComponent implements OnInit {
           );
 
         // Grey Zone
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#949494')
           .attr("stroke", "none")
@@ -154,7 +271,7 @@ export class HorizonPlotComponent implements OnInit {
           );
 
         // Freshness Zone
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#1795ef')
           .attr("stroke", "none")
@@ -173,7 +290,7 @@ export class HorizonPlotComponent implements OnInit {
 
 
         // Transitonal Zone
-        svg.append("path")
+        lineSvg.append("path")
           .datum(data)
           .attr("fill", '#fc670d')
           .attr("stroke", "none")
@@ -190,7 +307,7 @@ export class HorizonPlotComponent implements OnInit {
             })
           );
 
-        svg
+        lineSvg
           .append("path")
           .datum(data)
           .attr("fill", "none")
@@ -202,7 +319,7 @@ export class HorizonPlotComponent implements OnInit {
           );
       } else if (label === "fit")
       {
-        svg
+        lineSvg
           .append("path")
           .datum(data)
           .attr("fill", "#52b254")
@@ -214,7 +331,7 @@ export class HorizonPlotComponent implements OnInit {
             .y1((d: any) => yScale(d.fit))
           );
       } else {
-        svg
+        lineSvg
           .append("path")
           .datum(data)
           .attr("fill", "#ef1717")

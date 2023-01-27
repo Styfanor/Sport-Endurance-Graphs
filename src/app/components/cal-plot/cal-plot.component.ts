@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
+import * as d3sel from 'd3-selection';
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -25,11 +26,13 @@ export class CalPlotComponent implements OnInit {
   ];
   selected: any = 'RelativeEffort';
 
+  tooltip: any;
+
 
 
 
   constructor(public dataService: DataService) {
-  }
+}
 
   ngOnInit(): void {
     this.years = this.dataService.createData(this.dataService.getData(), this.selected);
@@ -65,9 +68,20 @@ export class CalPlotComponent implements OnInit {
   }
 
 
+  createTooltip() {
+    this.tooltip = d3.select("#tooltip")
+      .style("position", "absolute")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px");
+  }
 
   createGraph() {
-    console.log(this.years[this.curYear].values);
+    this.createTooltip();
     this.svg = d3.select("#svg").attr("width", this.width).attr("height", this.height);
     this.svg.selectAll("*").remove();
     const year = this.svg.append("g")
@@ -89,11 +103,18 @@ export class CalPlotComponent implements OnInit {
       .attr("x", d => d3.timeMonday.count(d3.timeYear(d.date), d.date) * this.cellSize)
       .attr("y", d => d.date.getUTCDay() * this.cellSize)
       .attr("fill", d => color(d.value))
-      .on("mouseover", function () {
+      .on("mouseover", function (event, d) {
         d3.select(this).attr('stroke-width', "1px");
+        d3.select('#tooltip').transition().duration(100).style('opacity', 1).text("Date:"+ d.date.toISOString().split('T')[0] +"\nValue:" +d.value);
       })
-      .on("mouseout", function () {
+      .on("mouseout", function (d) {
         d3.select(this).attr('stroke-width', "0.3px");
+        d3.select('#tooltip').style('opacity', 0);
+      })
+      .on('mousemove', function(event, d) {
+        d3.select('#tooltip')
+          .style('left', (d3.pointer(event,year)[0]+10) + 'px')
+          .style('top', (d3.pointer(event,year)[1]+10 ) + 'px')
       });
 
     year
@@ -141,6 +162,8 @@ export class CalPlotComponent implements OnInit {
       .style("text-anchor", "end")
       .attr("dy", "-.25em")
       .text(function(d,i){ return month[i] });
+
+
   }
 
 }
