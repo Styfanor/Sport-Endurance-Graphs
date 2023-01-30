@@ -34,8 +34,11 @@ export class DataService {
       if(temp.some(e => e.date.getTime() === d.ActivityDate.getTime())) {
         let idx = temp.findIndex(e => e.date.getTime() === d.ActivityDate.getTime());
         temp[idx].value = temp[idx].value + Number(d[valueField]);
+        if(d.israce) {
+          temp[idx].race = d.israce
+        }
       } else{
-          temp.push({date: d.ActivityDate, value: Number(d[valueField])});
+          temp.push({date: d.ActivityDate, value: Number(d[valueField]), race: d.israce});
       }
     });
 
@@ -45,8 +48,11 @@ export class DataService {
       if(dateval.some(e => e.date.getTime() === d.date.getTime())) {
         let idx = dateval.findIndex(e => e.date.getTime() === d.date.getTime());
         dateval[idx].value = dateval[idx].value + Number(d.value);
+        if(d.race) {
+          dateval[idx].race = d.race
+        }
       } else{
-        dateval.push({date: d.date, value: Number(d.value)});
+        dateval.push({date: d.date, value: Number(d.value), race: d.race});
       }
     });
 
@@ -113,7 +119,8 @@ export class DataService {
         missingDate.setDate(currentDate.getDate() + j);
         let obj = {
           date: missingDate,
-          value: 0
+          value: 0,
+          race: false
         };
         dateValues.splice(i + j, 0, obj);
       }
@@ -129,7 +136,8 @@ export class DataService {
         missingDate.setDate(missingDate.getDate() + i);
         let obj = {
           date: missingDate,
-          value: 0
+          value: 0,
+          race: false
         };
         dateValues.splice(i, 0, obj);
       }
@@ -146,7 +154,8 @@ export class DataService {
         missingDate.setDate(lastDate.getDate() + j);
         let obj = {
           date: missingDate,
-          value: 0
+          value: 0,
+          race: false
         };
         dateValues.push(obj);
       }

@@ -48,7 +48,7 @@ export class HorizonPlotComponent implements OnInit {
     const width = 1000;
     const height = 100;
 
-    let svg = d3.select("#svg")
+    let svg = d3.select("#horizon")
       .attr("width", width)
       .attr("height", (height*years.length))
       .attr("viewBox", [0, 0, width, (height*years.length)])
@@ -61,12 +61,11 @@ export class HorizonPlotComponent implements OnInit {
     let max = this.findMax(years, label);
 
     years.forEach((year, i) => {
-      svg = d3.select("#svg");
+      svg = d3.select("#horizon");
       svg = svg.append("g")
         .attr("transform", `translate(50,${(i*height)})`);
 
       let data = this.dataService.getDataFFM(year.values);
-
 
       const xScale = d3.scaleUtc([data[0].date, data[data.length - 1].date], [0, width]);
       const yScale = d3.scaleLinear([min, max], [height, 0]);
@@ -74,7 +73,6 @@ export class HorizonPlotComponent implements OnInit {
       svg.append("g")
         .call(d3.axisBottom(xScale))
         .selectAll("text")
-        .attr("transform", "translate(-10,0)rotate(45)")
         .style("text-anchor", "end");
 
       svg.append("g")
@@ -187,7 +185,7 @@ export class HorizonPlotComponent implements OnInit {
           focus.select(".x")
             .attr("transform",
               "translate(" + xScale(d.date) + "," +
-              yScale(d.close) + ")")
+              yScale(d[label]) + ")")
             .attr("y2", height - yScale(d[label]));
 
           focus.select(".y")
@@ -343,9 +341,6 @@ export class HorizonPlotComponent implements OnInit {
             .y1((d: any) => yScale(d.fat))
           );
       }
-
-
-
     });
   }
 

@@ -21,6 +21,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import { AngularResizeEventModule } from 'angular-resize-event';
 import { MatrixComponent } from './components/matrix/matrix.component';
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 
 
@@ -35,22 +36,23 @@ import {MatTabsModule} from "@angular/material/tabs";
     BarChartComponent,
     MatrixComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatTableModule,
-        MatIconModule,
-        MatInputModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatGridListModule,
-        AngularResizeEventModule,
-        MatTabsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatGridListModule,
+    AngularResizeEventModule,
+    MatTabsModule,
+    MatCheckboxModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

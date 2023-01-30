@@ -12,7 +12,7 @@ export class FileUploadComponent implements OnInit {
 
   data: any[] = [];
 
-  displayedColumns: string[] = ['id', 'date', 'name'];
+  displayedColumns: string[] = ['id', 'date', 'name', "race"];
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
@@ -29,6 +29,11 @@ export class FileUploadComponent implements OnInit {
     let dataArray: any[] = papaparse.parse(csvText,{header: true}).data;
     dataArray.pop();
     dataArray.forEach(d => {
+      if(d.ActivityName.toLowerCase().includes("race")){
+        d.israce = true;
+      } else{
+        d.israce = false;
+      }
       if (moment(d.ActivityDate, "DD.MM.YYYY").isValid()) {
         d.ActivityDate = moment(d.ActivityDate, "DD.MM.YYYY").toDate();
       } else {
@@ -37,8 +42,12 @@ export class FileUploadComponent implements OnInit {
       }
     });
 
-    this.data = dataArray;;
+    this.data = dataArray;
     this.dataService.setData(this.data);
   }
 
+  updateData(element) {
+    this.data.find(d => d.ActivityID === element.ActivityID).israce = element.israce;
+    this.dataService.setData(this.data);
+  }
 }
