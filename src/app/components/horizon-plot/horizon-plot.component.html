@@ -1,4 +1,12 @@
 <h1>Horizon Plot</h1>
+<div class="container">
+  <mat-form-field appearance="fill">
+    <mat-label>Years</mat-label>
+    <mat-select [(ngModel)]="selectedYears" (ngModelChange)="changeYears()" multiple>
+      <mat-option *ngFor="let year of yearsList; let i = index" [value]="i">{{year}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 <div>
   <mat-form-field appearance="fill">
     <mat-label>Values</mat-label>

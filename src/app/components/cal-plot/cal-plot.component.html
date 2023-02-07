@@ -1,12 +1,11 @@
 <h1>Calendar Heatmap</h1>
 <div class="container">
-<button mat-mini-fab color="primary" (click)="prevYear()">
-  <mat-icon>arrow_back</mat-icon>
-</button>
-<h1 class="year">{{getYear()}}</h1>
-<button mat-mini-fab color="primary" (click)="nextYear()">
-  <mat-icon>arrow_forward</mat-icon>
-</button>
+  <mat-form-field appearance="fill">
+    <mat-label>Years</mat-label>
+    <mat-select [(ngModel)]="selectedYears" (ngModelChange)="changeYears()" multiple>
+      <mat-option *ngFor="let year of yearsList; let i = index" [value]="i">{{year}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <mat-form-field appearance="fill">
   <mat-label>Metrics</mat-label>

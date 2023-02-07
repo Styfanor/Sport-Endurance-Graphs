@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
-import * as d3sel from 'd3-selection';
 import {DataService} from "../../services/data.service";
 
 @Component({
@@ -28,7 +27,9 @@ export class CalPlotComponent implements OnInit {
 
   tooltip: any;
 
+  yearsList: any;
 
+  selectedYears = [0];
 
 
   constructor(public dataService: DataService) {
@@ -36,35 +37,30 @@ export class CalPlotComponent implements OnInit {
 
   ngOnInit(): void {
     this.years = this.dataService.createData(this.dataService.getData(), this.selected);
-    this.curYear = 0;
-    this.createGraph();
+    this.yearsList = this.years.map(year => year.key);
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createGraph(year, index);
+    });
+  }
+
+  changeYears(){
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createGraph(year , index);
+    });
   }
 
   changeSelect():void {
-    console.log(this.selected)
+    this.createSvg();
     this.years = this.dataService.createData(this.dataService.getData(), this.selected);
-    this.createGraph();
-  }
-  nextYear() {
-    this.curYear++;
-    if (this.curYear < this.years.length) {
-      this.createGraph();
-    } else {
-      this.curYear--;
-    }
+    this.selectedYears.forEach((year, index) => {
+      this.createGraph(year, index);
+    });
   }
 
-  prevYear() {
-    this.curYear--;
-    if (this.curYear >= 0) {
-      this.createGraph();
-    } else {
-      this.curYear++;
-    }
-  }
-
-  getYear() {
-    return this.years[this.curYear].key;
+  getYear(curYear: any) {
+    return this.years[curYear].key;
   }
 
 
@@ -80,14 +76,22 @@ export class CalPlotComponent implements OnInit {
       .style("padding", "5px");
   }
 
-  createGraph() {
-    this.createTooltip();
-    this.svg = d3.select("#svg").attr("width", this.width).attr("height", this.height);
+  createSvg(){
+    this.svg = d3.select("#svg").attr("width", this.width).attr("height", this.height * this.selectedYears.length);
     this.svg.selectAll("*").remove();
-    const year = this.svg.append("g")
-      .attr("transform",  "translate(" + ((this.width - this.cellSize * 53) / 2) + "," + (this.height - this.cellSize * 7 - 1) + ")");
+    this.createTooltip();
+  }
 
-    let max = Math.max(...this.years[this.curYear].values.map(d => d.value));
+  createGraph(curYear, index) {
+    const year = this.svg.append("g")
+      .attr("transform",  "translate(" + ((this.width - this.cellSize * 53) / 2) + "," + (this.height * (index+1) - this.cellSize * 7 - 1) + ")");
+
+    year.append("text")
+      .attr("transform", "translate(930," + this.cellSize * 3.5 + ")rotate(-90)")
+      .style("text-anchor", "middle")
+      .text(this.getYear(curYear));
+
+    let max = Math.max(...this.years[curYear].values.map(d => d.value));
     // @ts-ignore
     let color = d3.scaleLinear().domain([0,(max-(max/3))]).range(["white", "green"])
 
@@ -96,7 +100,7 @@ export class CalPlotComponent implements OnInit {
       .attr("stroke", "#000")
       .attr("stroke-width", "0.3px")
       .selectAll("rect")
-      .data(this.years[this.curYear].values)
+      .data(this.years[curYear].values)
       .join("rect")
       .attr("width", this.cellSize)
       .attr("height", this.cellSize )
@@ -105,7 +109,7 @@ export class CalPlotComponent implements OnInit {
       .attr("fill", d => color(d.value))
       .on("mouseover", function (event, d) {
         d3.select(this).attr('stroke-width', "1px");
-        d3.select('#tooltip').transition().duration(100).style('opacity', 1).text("Date:"+ d.date.toISOString().split('T')[0] +"\nValue:" +d.value);
+        d3.select('#tooltip').transition().duration(100).style('opacity', 1).text("Date:"+ d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate() +"Value:" +d.value);
       })
       .on("mouseout", function (d) {
         d3.select(this).attr('stroke-width', "0.3px");
@@ -134,7 +138,7 @@ export class CalPlotComponent implements OnInit {
       .attr("stroke", "#000")
       .attr("stroke-width", "1.5px")
       .selectAll("path")
-      .data(d3.timeMonths(new Date(this.getYear(), 0, 1), new Date(Number(this.getYear()) + 1, 0, 1)))
+      .data(d3.timeMonths(new Date(this.getYear(curYear), 0, 1), new Date(Number(this.getYear(curYear)) + 1, 0, 1)))
       .enter().append("path")
       .attr("d", function (d) {
         const cellSize = 17;

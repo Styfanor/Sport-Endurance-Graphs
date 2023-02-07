@@ -18,11 +18,42 @@ export class HorizonPlotComponent implements OnInit {
     {name: 'Fatigue', value: 'fat'}
   ]
 
+  width = 1000;
+  height = 100;
+
+  yearsList: any;
+
+  selectedYears = [0];
+
+  svg: any;
+
+  focuses: any[] = [];
+
+  datafocus: any[]= [];
+
+  xScales: any[]= [];
+
+  yScales: any[]= [];
+
+  bisectDates: any[]= [];
+
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.data = this.dataService.createData(this.dataService.getData(), 'RelativeEffort');
-    this.createHorizonChart(this.data, this.selected);
+    this.yearsList = this.data.map(year => year.key);
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createHorizonChart(this.data[year], this.selected, index);
+    });
+    this.addTooltip();
+  }
+  changeYears(){
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createHorizonChart(this.data[year], this.selected, index);
+    });
+    this.addTooltip();
   }
 
   findMax(years, label) {
@@ -43,54 +74,46 @@ export class HorizonPlotComponent implements OnInit {
     return min;
   }
 
-  createHorizonChart(years, label) {
-
-    const width = 1000;
-    const height = 100;
-
-    let svg = d3.select("#horizon")
-      .attr("width", width)
-      .attr("height", (height*years.length))
-      .attr("viewBox", [0, 0, width, (height*years.length)])
+  createSvg(){
+    this.svg = d3.select("#horizon")
+      .attr("width", this.width)
+      .attr("height", (this.height*this.data.length))
+      .attr("viewBox", [0, 0, this.width, (this.height*this.data.length)])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
       .attr("font-family", "sans-serif")
       .attr("font-size", 10);
 
-    svg.selectAll("*").remove();
-    let min = this.findMin(years, label);
-    let max = this.findMax(years, label);
+    this.svg.selectAll("*").remove();
+  }
 
-    years.forEach((year, i) => {
-      svg = d3.select("#horizon");
-      svg = svg.append("g")
-        .attr("transform", `translate(50,${(i*height)})`);
+  createHorizonChart(year, label, index) {
+    this.svg = d3.select("#horizon");
+    let min = this.findMin(this.data, label);
+    let max = this.findMax(this.data, label);
+
+      this.svg = this.svg.append("g")
+        .attr("transform", `translate(50,${(index*this.height)})`);
 
       let data = this.dataService.getDataFFM(year.values);
 
-      const xScale = d3.scaleUtc([data[0].date, data[data.length - 1].date], [0, width]);
-      const yScale = d3.scaleLinear([min, max], [height, 0]);
+      const xScale = d3.scaleUtc([data[0].date, data[data.length - 1].date], [0, this.width]);
+      const yScale = d3.scaleLinear([min, max], [this.height, 0]);
 
-      svg.append("g")
+      this.svg.append("g")
         .call(d3.axisBottom(xScale))
         .selectAll("text")
         .style("text-anchor", "end");
 
-      svg.append("g")
+    this.svg.append("g")
         .call(d3.axisLeft(yScale));
 
-      let lineSvg = svg.append("g");
+      let lineSvg = this.svg.append("g");
 
-      let focus = svg.append("g")
+      let focus = this.svg.append("g")
         .style("display", "none");
 
       let bisectDate = d3.bisector(function(d) { // @ts-ignore
         return d.date; }).left;
-
-      focus.append("circle")
-        .attr("class", "y")
-        .style("fill", "none")
-        .style("stroke", "blue")
-        .attr("r", 4);
 
       // append the x line
       focus.append("line")
@@ -99,7 +122,7 @@ export class HorizonPlotComponent implements OnInit {
         .style("stroke-dasharray", "3,3")
         .style("opacity", 0.5)
         .attr("y1", 0)
-        .attr("y2", height);
+        .attr("y2", this.height);
 
       // append the y line
       focus.append("line")
@@ -107,8 +130,8 @@ export class HorizonPlotComponent implements OnInit {
         .style("stroke", "blue")
         .style("stroke-dasharray", "3,3")
         .style("opacity", 0.5)
-        .attr("x1", width)
-        .attr("x2", width);
+        .attr("x1", this.width)
+        .attr("x2", this.width);
 
       // place the value at the intersection
       focus.append("text")
@@ -136,14 +159,22 @@ export class HorizonPlotComponent implements OnInit {
         .attr("dx", 8)
         .attr("dy", "1em");
 
+      this.focuses.push(focus);
+      this.bisectDates.push(bisectDate);
+      this.yScales.push(yScale);
+      this.xScales.push(xScale);
+      this.datafocus.push(data);
+
       // append the rectangle to capture mouse
-      svg.append("rect")
-        .attr("width", width)
-        .attr("height", height)
+      this.svg.append("rect")
+        .attr("width", this.width)
+        .attr("height", this.height)
         .style("fill", "none")
         .style("pointer-events", "all")
-        .on("mouseover", function() { focus.style("display", null); })
-        .on("mouseout", function() { focus.style("display", "none"); })
+
+      /*d3.select("#horizon")
+        .on("mouseover", function() { d3.selectAll("#focus").style("display", null);})
+        .on("mouseout", function() { d3.selectAll("#focus").style("display", "none");})
         .on("mousemove", function(event) {
           // @ts-ignore
           var x0 = xScale.invert(d3.pointer(event)[0]),
@@ -152,11 +183,6 @@ export class HorizonPlotComponent implements OnInit {
             d1 = data[i],
             // @ts-ignore
             d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-
-          focus.select("circle.y")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")");
 
           focus.select("text.y1")
             .attr("transform",
@@ -174,26 +200,26 @@ export class HorizonPlotComponent implements OnInit {
             .attr("transform",
               "translate(" + xScale(d.date) + "," +
               yScale(d[label]) + ")")
-            .text(d.date.toISOString().split('T')[0]);
+            .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
 
           focus.select("text.y4")
             .attr("transform",
               "translate(" + xScale(d.date) + "," +
               yScale(d[label]) + ")")
-            .text(d.date.toISOString().split('T')[0]);
+            .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
 
           focus.select(".x")
             .attr("transform",
               "translate(" + xScale(d.date) + "," +
               yScale(d[label]) + ")")
-            .attr("y2", height - yScale(d[label]));
+            .attr("y2", 100 - yScale(d[label]));
 
           focus.select(".y")
             .attr("transform",
-              "translate(" + width * -1 + "," +
+              "translate(" + 1000 * -1 + "," +
               yScale(d[label]) + ")")
-            .attr("x2", width + width);
-        });
+            .attr("x2", 1000 + 1000);
+        });*/
 
       if (label === "form") {
 
@@ -341,10 +367,82 @@ export class HorizonPlotComponent implements OnInit {
             .y1((d: any) => yScale(d.fat))
           );
       }
+  }
+
+  showFocuses() {
+    this.focuses.forEach((focus, index) => {
+      focus.style("display", null);
     });
   }
 
+  hideFocuses() {
+    this.focuses.forEach((focus, index) => {
+      focus.style("display", "none");
+    });
+  }
+
+  mouseOverFocus(event, label) {
+    this.focuses.forEach((focus, index) => {
+      // @ts-ignore
+      var x0 = this.xScales[index].invert(d3.pointer(event)[0]),
+        i = this.bisectDates[index](this.datafocus[index], x0, 1),
+        d0 = this.datafocus[index][i - 1],
+        d1 = this.datafocus[index][i],
+        // @ts-ignore
+        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+
+      focus.select("text.y1")
+        .attr("transform",
+          "translate(" + this.xScales[index](d.date) + "," +
+          this.yScales[index](d[label]) + ")")
+        .text("Value: " + Math.round(d[label]));
+
+      focus.select("text.y2")
+        .attr("transform",
+          "translate(" + this.xScales[index](d.date) + "," +
+          this.yScales[index](d[label]) + ")")
+        .text("Value: " + Math.round(d[label]));
+
+      focus.select("text.y3")
+        .attr("transform",
+          "translate(" + this.xScales[index](d.date) + "," +
+          this.yScales[index](d[label]) + ")")
+        .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
+
+      focus.select("text.y4")
+        .attr("transform",
+          "translate(" + this.xScales[index](d.date) + "," +
+          this.yScales[index](d[label]) + ")")
+        .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
+
+      focus.select(".x")
+        .attr("transform",
+          "translate(" + this.xScales[index](d.date) + "," +
+          this.yScales[index](d[label]) + ")")
+        .attr("y2", 100 - this.yScales[index](d[label]));
+
+      focus.select(".y")
+        .attr("transform",
+          "translate(" + 1000 * -1 + "," +
+          this.yScales[index](d[label]) + ")")
+        .attr("x2", 1000 + 1000);
+    });
+  }
+
+  addTooltip() {
+    d3.select("#horizon")
+      .on("mouseover", (i, n) => {
+        this.showFocuses();
+      })
+      .on("mouseout", (i, n) => { this.hideFocuses();})
+      .on("mousemove", (event) => { this.mouseOverFocus(event, this.selected);})
+  }
+
   changeSelect() {
-    this.createHorizonChart(this.data, this.selected);
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createHorizonChart(this.data[year], this.selected, index);
+    });
+    this.addTooltip();
   }
 }
