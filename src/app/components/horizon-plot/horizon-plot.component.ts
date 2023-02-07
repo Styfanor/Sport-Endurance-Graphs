@@ -76,9 +76,9 @@ export class HorizonPlotComponent implements OnInit {
 
   createSvg(){
     this.svg = d3.select("#horizon")
-      .attr("width", this.width)
-      .attr("height", (this.height*this.data.length))
-      .attr("viewBox", [0, 0, this.width, (this.height*this.data.length)])
+      .attr("width", this.width+100)
+      .attr("height", ((this.height+80)*this.data.length))
+      .attr("viewBox", [0, 0, this.width+100, ((this.height+80)*this.data.length)])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
       .attr("font-family", "sans-serif")
       .attr("font-size", 10);
@@ -92,15 +92,15 @@ export class HorizonPlotComponent implements OnInit {
     let max = this.findMax(this.data, label);
 
       this.svg = this.svg.append("g")
-        .attr("transform", `translate(50,${(index*this.height)})`);
+        .attr("transform", `translate(50,${(index*(this.height+20))+30})`);
 
       let data = this.dataService.getDataFFM(year.values);
 
       const xScale = d3.scaleUtc([data[0].date, data[data.length - 1].date], [0, this.width]);
-      const yScale = d3.scaleLinear([min, max], [this.height, 0]);
+      const yScale = d3.scaleLinear([min, max+10], [this.height, 0]);
 
       this.svg.append("g")
-        .call(d3.axisBottom(xScale))
+        .call(d3.axisTop(xScale))
         .selectAll("text")
         .style("text-anchor", "end");
 
@@ -171,55 +171,6 @@ export class HorizonPlotComponent implements OnInit {
         .attr("height", this.height)
         .style("fill", "none")
         .style("pointer-events", "all")
-
-      /*d3.select("#horizon")
-        .on("mouseover", function() { d3.selectAll("#focus").style("display", null);})
-        .on("mouseout", function() { d3.selectAll("#focus").style("display", "none");})
-        .on("mousemove", function(event) {
-          // @ts-ignore
-          var x0 = xScale.invert(d3.pointer(event)[0]),
-            i = bisectDate(data, x0, 1),
-            d0 = data[i - 1],
-            d1 = data[i],
-            // @ts-ignore
-            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-
-          focus.select("text.y1")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")")
-            .text("Value: " + Math.round(d[label]));
-
-          focus.select("text.y2")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")")
-            .text("Value: " + Math.round(d[label]));
-
-          focus.select("text.y3")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")")
-            .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
-
-          focus.select("text.y4")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")")
-            .text(d.date.getFullYear() +"-"+ (d.date.getMonth()+1) +"-"+ d.date.getDate());
-
-          focus.select(".x")
-            .attr("transform",
-              "translate(" + xScale(d.date) + "," +
-              yScale(d[label]) + ")")
-            .attr("y2", 100 - yScale(d[label]));
-
-          focus.select(".y")
-            .attr("transform",
-              "translate(" + 1000 * -1 + "," +
-              yScale(d[label]) + ")")
-            .attr("x2", 1000 + 1000);
-        });*/
 
       if (label === "form") {
 
