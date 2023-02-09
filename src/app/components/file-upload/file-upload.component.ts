@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import * as papaparse from 'papaparse';
 import {DataService} from "../../services/data.service";
@@ -13,10 +14,13 @@ export class FileUploadComponent implements OnInit {
   data: any[] = [];
 
   displayedColumns: string[] = ['id', 'date', 'name', "race"];
+
+  dataSource;
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.data = this.dataService.getData();
+    this.dataSource = new MatTableDataSource(this.data);
   }
 
   async importDataFromCSV(event: any) {
@@ -43,11 +47,19 @@ export class FileUploadComponent implements OnInit {
     });
 
     this.data = dataArray;
+    this.dataSource = new MatTableDataSource(this.data);
     this.dataService.setData(this.data);
   }
 
   updateData(element) {
     this.data.find(d => d.ActivityID === element.ActivityID).israce = element.israce;
     this.dataService.setData(this.data);
+    this.dataSource = new MatTableDataSource(this.data);
+
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

@@ -36,9 +36,10 @@ export class DataService {
         temp[idx].value = temp[idx].value + Number(d[valueField]);
         if(d.israce) {
           temp[idx].race = d.israce
+          temp[idx].name = d.ActivityName
         }
-      } else{
-          temp.push({date: d.ActivityDate, value: Number(d[valueField]), race: d.israce});
+      } else {
+        temp.push({date: d.ActivityDate, value: Number(d[valueField]), race: d.israce, name: d.ActivityName});
       }
     });
 
@@ -50,19 +51,20 @@ export class DataService {
         dateval[idx].value = dateval[idx].value + Number(d.value);
         if(d.race) {
           dateval[idx].race = d.race
+          dateval[idx].name = d.name
         }
       } else{
-        dateval.push({date: d.date, value: Number(d.value), race: d.race});
+        dateval.push({date: d.date, value: Number(d.value), race: d.race, name: d.name});
       }
     });
 
     this.addWeek(dateval);
 
-    let years = d3col.nest().key(function (d: any) {
+    /*let years = d3col.nest().key(function (d: any) {
       return d.date.getFullYear()
     }).entries(dateval);
-    console.log(years);
-    return years;
+    console.log(years);*/
+    return dateval;
   }
 
   public groupDataByWeek(data: any[]): any[] {
@@ -120,7 +122,8 @@ export class DataService {
         let obj = {
           date: missingDate,
           value: 0,
-          race: false
+          race: false,
+          name: ""
         };
         dateValues.splice(i + j, 0, obj);
       }
@@ -137,7 +140,8 @@ export class DataService {
         let obj = {
           date: missingDate,
           value: 0,
-          race: false
+          race: false,
+          name: ""
         };
         dateValues.splice(i, 0, obj);
       }
@@ -155,7 +159,8 @@ export class DataService {
         let obj = {
           date: missingDate,
           value: 0,
-          race: false
+          race: false,
+          name: ""
         };
         dateValues.push(obj);
       }

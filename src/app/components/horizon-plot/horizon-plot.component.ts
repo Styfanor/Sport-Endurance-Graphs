@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import {DataService} from "../../services/data.service";
+import * as d3col from "d3-collection";
 
 @Component({
   selector: 'app-horizon-plot',
@@ -10,6 +11,8 @@ import {DataService} from "../../services/data.service";
 export class HorizonPlotComponent implements OnInit {
 
   data: any[];
+
+  years: any[];
   selected = "form";
 
   ff = [
@@ -36,23 +39,59 @@ export class HorizonPlotComponent implements OnInit {
   yScales: any[]= [];
 
   bisectDates: any[]= [];
+  yearsListRaces = [];
+
+  raceday = [""];
+
+  newYears = [];
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
     this.data = this.dataService.createData(this.dataService.getData(), 'RelativeEffort');
-    this.yearsList = this.data.map(year => year.key);
+    this.years = d3col.nest().key(function (d: any) {
+      return d.date.getFullYear()
+    }).entries(this.data);
+    this.yearsList = this.years.map(year => year.key);
+    this.createRaceList();
     this.createSvg();
+    this.years.forEach((year) => {
+      this.newYears.push(year.values);
+    });
     this.selectedYears.forEach((year, index) => {
-      this.createHorizonChart(this.data[year], this.selected, index);
+      this.createHorizonChart(this.newYears[year], this.selected, index);
     });
     this.addTooltip();
   }
+
+  createRaceList() {
+    this.yearsListRaces = [];
+    this.yearsList = this.years.map(year => year.key);
+    this.years.forEach((year, index) => {
+      if(this.selectedYears.includes(index)) {
+        let data = {name: year.key, values: []}
+        year.values.forEach(training => {
+          if (training.race) {
+            let value = {date: training.date, name: training.name}
+            data.values.push(value);
+          }
+        });
+        this.yearsListRaces.push(data);
+      }
+    });
+  }
+
   changeYears(){
     this.createSvg();
-    this.selectedYears.forEach((year, index) => {
-      this.createHorizonChart(this.data[year], this.selected, index);
+    this.raceday = [];
+    this.years.forEach((year, index) => {
+      this.newYears[index] = year.values;
     });
+    this.selectedYears.forEach((year, index) => {
+      this.raceday.push("");
+      this.createHorizonChart(this.newYears[year], this.selected, index);
+    });
+    this.createRaceList();
     this.addTooltip();
   }
 
@@ -88,13 +127,13 @@ export class HorizonPlotComponent implements OnInit {
 
   createHorizonChart(year, label, index) {
     this.svg = d3.select("#horizon");
-    let min = this.findMin(this.data, label);
-    let max = this.findMax(this.data, label);
+    let min = this.findMin(this.years, label);
+    let max = this.findMax(this.years, label);
 
       this.svg = this.svg.append("g")
         .attr("transform", `translate(50,${(index*(this.height+20))+30})`);
 
-      let data = this.dataService.getDataFFM(year.values);
+      let data = this.dataService.getDataFFM(year);
 
       const xScale = d3.scaleUtc([data[0].date, data[data.length - 1].date], [0, this.width]);
       const yScale = d3.scaleLinear([min, max+10], [this.height, 0]);
@@ -318,6 +357,19 @@ export class HorizonPlotComponent implements OnInit {
             .y1((d: any) => yScale(d.fat))
           );
       }
+
+      lineSvg.selectAll("dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("r", 3)
+        .attr("cx", (d: any) => xScale(d.date))
+        .attr("cy", (d: any) => yScale(d[label]))
+        .attr("fill", (d: any) =>
+          (d.race) ? "#ff0000" : "none"
+        )
+        .attr("stroke", (d: any) =>
+          (d.race) ? "#000" : "none"
+        );
   }
 
   showFocuses() {
@@ -391,8 +443,60 @@ export class HorizonPlotComponent implements OnInit {
 
   changeSelect() {
     this.createSvg();
+    this.years.forEach((year, index) => {
+      this.newYears[index] = year.values;
+    });
+    this.createRaceList();
+    this.raceday = [];
     this.selectedYears.forEach((year, index) => {
-      this.createHorizonChart(this.data[year], this.selected, index);
+      this.raceday.push("");
+      this.createHorizonChart(this.newYears[year], this.selected, index);
+    });
+    this.addTooltip();
+  }
+
+  shift(index, year) {
+    let new_year = []
+    let mid_index = this.data.findIndex(d => d.date ===  this.raceday[index]);
+    let start_index = mid_index - 183;
+    let end_index = mid_index + 182;
+    while(start_index < 0) {
+      let temp = {
+        date: new Date(this.data[0].date),
+        value: 0,
+        race: false,
+        week: 0,
+        name: ""
+      }
+      temp.date.setDate(temp.date.getDate() + start_index);
+      new_year.push(temp);
+      start_index++;
+    }
+    if(end_index < this.data.length) {
+      for (let i = start_index; i < end_index; i++) {
+        new_year.push(this.data[i]);
+      }
+    } else {
+      for (let i = start_index; i < this.data.length; i++) {
+        new_year.push(this.data[i]);
+      }
+    }
+    while(end_index > this.data.length) {
+      let temp = {
+        date: new Date(this.data[this.data.length-1].date),
+        value: 0,
+        week: 0,
+        name: ""
+      }
+      temp.date.setDate(temp.date.getDate() + end_index-this.data.length);
+      new_year.push(temp);
+      end_index--;
+    }
+    let idx = this.years.findIndex(d => d.key === year);
+    this.newYears[idx] = new_year;
+    this.createSvg();
+    this.selectedYears.forEach((year, index) => {
+      this.createHorizonChart(this.newYears[year], this.selected, index);
     });
     this.addTooltip();
   }

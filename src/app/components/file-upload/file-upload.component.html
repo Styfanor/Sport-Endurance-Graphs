@@ -1,8 +1,14 @@
 <input #fileUpload [accept]="'.csv'" type="file" class="file-input"
        (change)="importDataFromCSV($event)" hidden="true">
 <button mat-raised-button color="primary" (click)="fileUpload.click()"> Import from csv</button>
+<div *ngIf="data">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="..." #input>
+  </mat-form-field>
+</div>
 <div>
-  <table mat-table [dataSource]="data" class="mat-elevation-z8" *ngIf="data">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="data">
 
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> ID </th>
@@ -31,6 +37,9 @@
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching</td>
+    </tr>
 
 </table>
 </div>

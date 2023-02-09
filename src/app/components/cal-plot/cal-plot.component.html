@@ -15,6 +15,17 @@
     </mat-option>
   </mat-select>
 </mat-form-field>
+<div>
+  <mat-form-field appearance="fill" *ngFor="let year of yearsListRaces; let i = index" style="margin-right: 10px">
+    <mat-label>Races {{year.name}}</mat-label>
+    <mat-select [(ngModel)]="raceday[i]" (ngModelChange)="shift(i, year.name)">
+      <mat-option *ngFor="let race of year.values" [value]="race.date">
+        {{race.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 <br>
 <div id="tooltip"></div>
 <svg id="svg"></svg>
