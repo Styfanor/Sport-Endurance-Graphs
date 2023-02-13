@@ -33,11 +33,7 @@ export class FileUploadComponent implements OnInit {
     let dataArray: any[] = papaparse.parse(csvText,{header: true}).data;
     dataArray.pop();
     dataArray.forEach(d => {
-      if(d.ActivityName.toLowerCase().includes("race")){
-        d.israce = true;
-      } else{
-        d.israce = false;
-      }
+      d.israce = false;
       if (moment(d.ActivityDate, "DD.MM.YYYY").isValid()) {
         d.ActivityDate = moment(d.ActivityDate, "DD.MM.YYYY").toDate();
       } else {

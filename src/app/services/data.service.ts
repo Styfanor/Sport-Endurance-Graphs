@@ -59,11 +59,6 @@ export class DataService {
     });
 
     this.addWeek(dateval);
-
-    /*let years = d3col.nest().key(function (d: any) {
-      return d.date.getFullYear()
-    }).entries(dateval);
-    console.log(years);*/
     return dateval;
   }
 
