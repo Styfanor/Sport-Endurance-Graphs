@@ -2,7 +2,7 @@
 <div>
   <mat-form-field appearance="fill" class="selector">
     <mat-label>1. Year</mat-label>
-    <mat-select [(ngModel)]="year1">
+    <mat-select [(ngModel)]="year1" (ngModelChange)="changeYear()">
     <mat-option *ngFor="let d of data" [value]="d.key">
       {{d.key}}
     </mat-option>
@@ -11,7 +11,7 @@
 
   <mat-form-field appearance="fill" class="selector">
     <mat-label>2. Year</mat-label>
-    <mat-select [(ngModel)]="year2">
+    <mat-select [(ngModel)]="year2" (ngModelChange)="changeYear()">
       <mat-option *ngFor="let d of data" [value]="d.key">
         {{d.key}}
       </mat-option>
@@ -30,20 +30,21 @@
 
 <div class="container">
 <mat-grid-list cols="6" rowHeight="1:1">
-  <mat-grid-tile colspan="1" rowspan="1">1</mat-grid-tile>
+  <mat-grid-tile colspan="1" rowspan="1"></mat-grid-tile>
   <mat-grid-tile colspan="5" rowspan="1" >
-    <div class="year" (resized)="onResizedYear2($event)">
-      <app-bar-chart *ngIf="year2" [data]="getYearData(year2)" [indicator]="2" [color]="'#3559d0'" [width]="year2width"  [height]="year2height"></app-bar-chart>
+    <div class="year">
+      <svg id="horizontal"></svg>
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="1" rowspan="5">
-    <div class="year" (resized)="onResizedYear1($event)">
-      <app-bar-chart *ngIf="year1" [data]="getYearData(year1)" [indicator]="1" [color]="'#d03535'" [width]="year1width"  [height]="year1height"></app-bar-chart>
+    <div class="year">
+      <svg id="vertical"></svg>
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="5" rowspan="5">
-    <div class = "year" (resized)="onResizedMatrix($event)">
-      <app-matrix [year1]="getYearData(year1)" [year2]="getYearData(year2)" [height]="matrixheight" [width]="matrixwidth"></app-matrix>
+    <div class = "year">
+      <div id="tooltip"></div>
+      <svg id="matrix"></svg>
     </div>
   </mat-grid-tile>
 </mat-grid-list>

@@ -13,13 +13,11 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTableModule} from "@angular/material/table";
-import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import {MatInputModule} from "@angular/material/input";
 import {MatSelectModule} from "@angular/material/select";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { AngularResizeEventModule } from 'angular-resize-event';
-import { MatrixComponent } from './components/matrix/matrix.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
@@ -32,9 +30,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     HorizonPlotComponent,
     MatrixPlotComponent,
     FileUploadComponent,
-    NavbarComponent,
-    BarChartComponent,
-    MatrixComponent
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
