@@ -94,7 +94,8 @@ export class CalPlotComponent implements OnInit {
     this.yearsList = this.years.map(year => year.key);
     this.years.forEach((year, index) => {
       if(this.selectedYears.includes(index)) {
-        let data = {name: year.key, values: []}
+        let data = {name: year.key, values: []};
+        data.values.push({date: new Date(year.key, 6, 3), name: "none"});
         year.values.forEach(training => {
           if (training.race) {
             let value = {date: training.date, name: training.name}
@@ -126,7 +127,6 @@ export class CalPlotComponent implements OnInit {
   }
 
   createGraph(curYear, index, yeardata) {
-    console.log(yeardata);
     const year = this.svg.append("g")
       .attr("transform",  "translate(" + ((this.width - this.cellSize * 53) / 2) + "," + (this.height * (index+1) - this.cellSize * 7 - 1) + ")");
 
@@ -177,27 +177,6 @@ export class CalPlotComponent implements OnInit {
       .attr("font-size", 12)
       .text(d => ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"][d.getUTCDay()]);
 
-    /*year.append("g")
-      .attr("fill", "none")
-      .attr("stroke", "#000")
-      .attr("stroke-width", "1.5px")
-      .selectAll("path")
-      .data(d3.timeMonths(new Date(yeardata[0].date.getFullYear(), yeardata[0].date.getMonth(), yeardata[0].date.getDate()), new Date(yeardata[yeardata.length-1].date.getFullYear(), yeardata[yeardata.length-1].date.getMonth(), yeardata[yeardata.length-1].date.getDate())))
-      .enter().append("path")
-      .attr("d", function (d) {
-        const cellSize = 17;
-        const t1 = new Date(d.getFullYear(), d.getMonth() + 1, d.getDate());
-        const  d0 = d.getUTCDay();
-        const  w0 = d3.timeMonday.count(d3.timeYear(d), d);
-        const  d1 = t1.getUTCDay();
-        const w1 = d3.timeMonday.count(d3.timeYear(t1), t1);
-        return "M" + ((w0 + 1) * cellSize) + "," + (d0 * cellSize )
-          + "H" + (w0 * cellSize) + "V" + (7 * cellSize)
-          + "H" + (w1 * cellSize) + "V" + ((d1 + 1) * cellSize)
-          + "H" + ((w1 + 1) * cellSize) + "V" + 0
-          + "H" + ((w0 + 1) * cellSize) + "Z";
-      });*/
-
     let monthindex = [];
     yeardata.forEach(d => {
       if (monthindex.findIndex(m => m === d.date.getMonth()) === -1) {
@@ -223,9 +202,11 @@ export class CalPlotComponent implements OnInit {
 
   shift(index, year) {
     let new_year = []
-    let mid_index = this.data.findIndex(d => d.date ===  this.raceday[index]);
+    let mid_index = this.data.findIndex(d => d.date.getTime() === new Date(this.raceday[index]).getTime());
     let start_index = mid_index - 183;
     let end_index = mid_index + 182;
+    console.log(start_index);
+    console.log(end_index);
     while(start_index < 0) {
       let temp = {
         date: new Date(this.data[0].date),

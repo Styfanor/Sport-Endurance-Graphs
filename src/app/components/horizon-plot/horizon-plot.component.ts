@@ -69,7 +69,8 @@ export class HorizonPlotComponent implements OnInit {
     this.yearsList = this.years.map(year => year.key);
     this.years.forEach((year, index) => {
       if(this.selectedYears.includes(index)) {
-        let data = {name: year.key, values: []}
+        let data = {name: year.key, values: []};
+        data.values.push({date: new Date(year.key, 6, 3), name: "none"});
         year.values.forEach(training => {
           if (training.race) {
             let value = {date: training.date, name: training.name}
@@ -454,7 +455,7 @@ export class HorizonPlotComponent implements OnInit {
 
   shift(index, year) {
     let new_year = []
-    let mid_index = this.data.findIndex(d => d.date ===  this.raceday[index]);
+    let mid_index = this.data.findIndex(d => d.date.getTime() ===  new Date(this.raceday[index]).getTime());
     let start_index = mid_index - 183;
     let end_index = mid_index + 182;
     while(start_index < 0) {

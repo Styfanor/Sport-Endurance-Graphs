@@ -2,7 +2,7 @@
        (change)="importDataFromCSV($event)" hidden="true">
 <button mat-raised-button color="primary" (click)="fileUpload.click()"> Import from csv</button>
 <div *ngIf="data">
-  <mat-form-field>
+  <mat-form-field style="width: 80%;">
     <mat-label>Search</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="..." #input>
   </mat-form-field>

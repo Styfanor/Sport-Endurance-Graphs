@@ -54,8 +54,6 @@ export class FileUploadComponent implements OnInit {
   updateData(element) {
     this.data.find(d => d.ActivityID === element.ActivityID).israce = element.israce;
     this.dataService.setData(this.data);
-    this.dataSource = new MatTableDataSource(this.data);
-
   }
 
   applyFilter(event: Event) {
