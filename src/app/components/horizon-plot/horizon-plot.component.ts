@@ -116,7 +116,7 @@ export class HorizonPlotComponent implements OnInit {
 
   createSvg(){
     this.svg = d3.select("#horizon")
-      .attr("width", this.width+100)
+      .attr("width", "100%")
       .attr("height", ((this.height+80)*this.selectedYears.length))
       .attr("viewBox", [0, 0, this.width+100, ((this.height+80)*this.selectedYears.length)])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
