@@ -446,11 +446,8 @@ export class HorizonPlotComponent implements OnInit {
     this.years.forEach((year, index) => {
       this.newYears[index] = year.values;
     });
-    this.createRaceList();
-    this.raceday = [];
-    this.selectedYears.forEach((year, index) => {
-      this.raceday.push("");
-      this.createHorizonChart(this.newYears[year], this.selected, index);
+    this.yearsListRaces.forEach((year, index) => {
+      this.shift(index, year.name);
     });
     this.addTooltip();
   }

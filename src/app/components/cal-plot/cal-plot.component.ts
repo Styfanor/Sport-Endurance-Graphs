@@ -80,11 +80,8 @@ export class CalPlotComponent implements OnInit {
     this.years.forEach((year, index) => {
       this.newYears[index] = year.values;
     });
-    this.createRaceList();
-    this.raceday = [];
-    this.selectedYears.forEach((year, index) => {
-      this.raceday.push("");
-      this.createGraph(year , index, this.newYears[year]);
+    this.yearsListRaces.forEach((year, index) => {
+      this.shift(index, year.name);
     });
   }
 
