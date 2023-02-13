@@ -1,3 +1,4 @@
+<div class="head-container">
 <h2>Matrix Plot</h2>
 <div>
   <mat-form-field appearance="fill" class="selector">
@@ -27,24 +28,31 @@
     </mat-select>
   </mat-form-field>
 </div>
-
+</div>
 <div class="container">
-<mat-grid-list cols="6" rowHeight="1:1">
-  <mat-grid-tile colspan="1" rowspan="1"></mat-grid-tile>
+<mat-grid-list cols="6" rowHeight="1:1" >
+  <mat-grid-tile colspan="1" rowspan="1">
+    <div id="tooltip">
+      <div style="color: #3559d0;" id="xweek"></div>
+      <div style="color: #d03535;" id="yweek"></div>
+      <div style="color: #3559d0;" id="xvalue"></div>
+      <div style="color: #d03535;" id="yvalue"></div>
+    </div>
+  </mat-grid-tile>
   <mat-grid-tile colspan="5" rowspan="1" >
-    <div class="year">
+    <div class = "year">
       <svg id="horizontal"></svg>
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="1" rowspan="5">
-    <div class="year">
+    <div class = "year">
       <svg id="vertical"></svg>
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="5" rowspan="5">
     <div class = "year">
-      <div id="tooltip"></div>
-      <svg id="matrix"></svg>
+      <svg id="matrix">
+      </svg>
     </div>
   </mat-grid-tile>
 </mat-grid-list>

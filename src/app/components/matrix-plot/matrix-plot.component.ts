@@ -58,7 +58,10 @@ export class MatrixPlotComponent implements OnInit {
   }
 
   changeSelect():void {
-    this.data = this.dataService.createData(this.dataService.getData(), this.selected);
+    this.rawdata = this.dataService.createData(this.dataService.getData(), this.selected);
+    this.data = d3col.nest().key(function (d: any) {
+      return d.date.getFullYear()
+    }).entries(this.rawdata);
     this.changeYear();
   }
 
@@ -68,8 +71,8 @@ export class MatrixPlotComponent implements OnInit {
 
   private createSvgHoriziontal(): void {
       this.svgHorizontal = d3.select("#horizontal")
-        .attr("width",  this.matrixsize + (this.margin * 2))
-        .attr("height", this.height + (this.margin * 2));
+        .attr("width", "100%")
+        .attr("viewBox", [0, 0, this.matrixsize + (this.margin * 2), this.height + (this.margin * 2)]);
     this.svgHorizontal.selectAll("*").remove();
     this.svgHorizontal = this.svgHorizontal
       .append("g")
@@ -78,8 +81,8 @@ export class MatrixPlotComponent implements OnInit {
 
   private createSvgVertical(): void {
     this.svgVertical = d3.select("#vertical")
-      .attr("width", this.height)
-      .attr("height", this.matrixsize);
+      .attr("height", "100%")
+      .attr("viewBox", [0, 0, this.height + (this.margin * 2), this.matrixsize + (this.margin * 2)]);
     this.svgVertical.selectAll("*").remove();
     this.svgVertical = this.svgVertical
       .append("g")
@@ -160,20 +163,14 @@ export class MatrixPlotComponent implements OnInit {
 
   createTooltip() {
     this.tooltip = d3.select("#tooltip")
-      .style("position", "absolute")
       .style("opacity", 0)
-      .style("position", "absolute")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
       .style("padding", "5px");
   }
 
   private createSvgMatrix(): void {
     this.svgMatrix = d3.select("#matrix")
-      .attr("width", this.matrixsize + (this.margin * 2))
-      .attr("height", this.matrixsize + (this.margin * 2));
+      .attr("width", "100%")
+      .attr("viewBox", [0, 0, this.matrixsize + (this.margin * 2), this.matrixsize + (this.margin * 2)])
     this.svgMatrix.selectAll("*").remove();
     this.svgMatrix = this.svgMatrix
       .append("g")
@@ -207,7 +204,6 @@ export class MatrixPlotComponent implements OnInit {
 
     year1.map((d, i) => {
       year2.map((e, j) => {
-        let tooltipText = "X-Week:"+ e.week + "\n Y-Week:"+ d.week +"\n X-Value:" +e.value +"\n Y-Value:" +d.value;
         // @ts-ignore
         var color = d3.scaleLinear().domain([(d.value + 1)*-1, 0, e.value +1]).range(["#d03535", "#fff", "#3559d0"])
         this.svgMatrix.append("rect")
@@ -218,22 +214,20 @@ export class MatrixPlotComponent implements OnInit {
           .style("fill", color(e.value - d.value))
           .style("stroke", "black")
           .style("stroke-width", (e.week === d.week) ? "2px" : "0.5px")
-        .on("mouseover", function (event, d) {
+        .on("mouseover", function (event, c) {
           d3.select(this).attr('stroke-width', "4px");
-          d3.select('#tooltip').transition().duration(100).style('opacity', 1).text(tooltipText);
+          d3.select('#tooltip').transition().duration(100).style('opacity', 1);
+          d3.select('#tooltip').select('#xweek').text("X-Week: " + e.week);
+          d3.select('#tooltip').select('#yweek').text("Y-Week: " + d.week);
+          d3.select('#tooltip').select('#xvalue').text("X-Value: " + e.value);
+          d3.select('#tooltip').select('#yvalue').text("Y-Value: " + d.value);
         })
         .on("mouseout", function (d) {
           d3.select(this).attr('stroke-width', "0.5px");
           d3.select('#tooltip').style('opacity', 0);
-        })
-        .on('mousemove', function(event, d) {
-          d3.select('#tooltip')
-            .style('left', (d3.pointer(event)[0]+40) + 'px')
-            .style('top', (d3.pointer(event)[1]+30 ) + 'px')
         });
       });
     });
-
   }
 
   changeYear() {

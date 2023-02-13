@@ -116,8 +116,8 @@ export class HorizonPlotComponent implements OnInit {
   createSvg(){
     this.svg = d3.select("#horizon")
       .attr("width", this.width+100)
-      .attr("height", ((this.height+80)*this.data.length))
-      .attr("viewBox", [0, 0, this.width+100, ((this.height+80)*this.data.length)])
+      .attr("height", ((this.height+80)*this.selectedYears.length))
+      .attr("viewBox", [0, 0, this.width+100, ((this.height+80)*this.selectedYears.length)])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
       .attr("font-family", "sans-serif")
       .attr("font-size", 10);
@@ -361,7 +361,7 @@ export class HorizonPlotComponent implements OnInit {
       lineSvg.selectAll("dot")
         .data(data)
         .enter().append("circle")
-        .attr("r", 3)
+        .attr("r", 3.5)
         .attr("cx", (d: any) => xScale(d.date))
         .attr("cy", (d: any) => yScale(d[label]))
         .attr("fill", (d: any) =>
